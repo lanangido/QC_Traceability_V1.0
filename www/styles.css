@@ -1,0 +1,12 @@
+/* Style kustom untuk tombol refresh */
+.btn-custom-black {
+  background-color: #1E2020 !important; /* Warna hitam sesuai sidebar */
+  color: #FFFFFF !important; /* Tulisan putih */
+  border-color: #555555 !important;
+  font-weight: bold;
+}
+
+.btn-custom-black:hover {
+  background-color: #333333 !important; /* Warna sedikit lebih terang saat disentuh mouse */
+  border-color: #777777 !important;
+}
