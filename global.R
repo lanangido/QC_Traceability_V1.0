@@ -4,8 +4,12 @@ library(DBI)
 library(RPostgres)
 library(shinyjs)
 library(bslib)
-library(shinydashboard) # Tambahkan ini
-library(shinyWidgets)  # Tambahkan ini
+library(shinydashboard)
+library(shinydashboardPlus)
+library(shinyWidgets)
+library(dplyr)
+library(bslib)
+library(tidyr)
 
 # -- KONFIGURASI DATABASE --
 db_config <- list(
@@ -13,7 +17,7 @@ db_config <- list(
   host = "localhost",
   port = 5432,
   user = "postgres",
-  password = "admin123" # Ganti dengan password Anda
+  password = "admin123" 
 )
 
 # Fungsi untuk koneksi ke database
@@ -32,6 +36,6 @@ get_db_conn <- function() {
 }
 
 # Memuat semua file dari folder R
-source("R/utils/validation.R")
-source("R/modules/auth_module.R")
-source("R/modules/operator_qc_module.R")
+#source("validation.R")
+source("auth_module.R")
+# source("R/modules/operator_qc_module.R")
