@@ -5,7 +5,7 @@ operator_qc_ui <- function(id) {
   fluidRow(
     column(width = 4,
            box(title = "Kontrol Inspeksi", solidHeader = TRUE, width = NULL,
-               selectInput(ns("tahap"), "Pilih Tahap Produksi:", choices = NULL),
+               selectInput(ns("tahap"), "Pilih Tahap Inspeksi:", choices = NULL),
                textInput(ns("part_number"), "Scan Barcode Part (Tekan Enter)"),
                actionButton(ns("refresh_btn"), "Refresh Form", icon = icon("sync"), class = "btn-custom-black w-100")
            ),
@@ -36,7 +36,11 @@ operator_qc_server <- function(id, conn, user_info, product_info) {
     
     observe({
       req(product_info())
-      tahap_choices <- dbGetQuery(conn, "SELECT DISTINCT tahap FROM qc_standart ORDER BY tahap")
+      
+      # Ambil tahapan dari DB dan langsung urutkan berdasarkan kolom baru
+      query <- "SELECT DISTINCT tahap, urutan_tahap FROM qc_standart ORDER BY urutan_tahap, tahap"
+      tahap_choices <- dbGetQuery(conn, query)
+      
       updateSelectInput(session, "tahap", choices = tahap_choices$tahap)
     })
     

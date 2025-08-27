@@ -4,10 +4,10 @@ auth_ui <- function(id) {
   
   # Menggunakan UI login
   div(
-    id = "loginpage", style = "width: 450px; max-width: 100%; margin: 0 auto;",
+    id = "loginpage", style = "width: 450px; max-width: 100%; margin: 0 auto; text-align: center;",
     
-    tags$div(style = "text-align: center; margin-bottom: 20px;",
-             tags$img(src = "logo.png", width = "300")
+    tags$div(style = "text-align: center; margin-bottom: 20px;"
+             # tags$img(src = "logos.png", width = "600")
     ),
     # ====================================================================
     
@@ -35,10 +35,13 @@ auth_ui <- function(id) {
   )
 }
 
+# Ganti seluruh fungsi auth_server di auth_module.R
+
 auth_server <- function(id, conn) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     auth_data <- reactiveValues(is_logged_in = FALSE, user_info = NULL)
+    
     observe({
       shinyjs::runjs(sprintf("
         $('#%s').on('keyup', function(e) {
@@ -46,17 +49,38 @@ auth_server <- function(id, conn) {
         });
       ", ns("passwd"), ns("login")))
     })
+    
     observeEvent(input$login, {
       req(input$userName, input$passwd)
-      query <- "SELECT user_id, email, nama, role FROM operator WHERE email = $1 AND password = $2"
-      user <- dbGetQuery(conn, query, params = list(input$userName, input$passwd))
-      if (nrow(user) > 0) {
+      
+      # 1. Ambil data user berdasarkan email saja
+      query <- "SELECT user_id, email, nama, role, password FROM operator WHERE email = $1"
+      user_data <- dbGetQuery(conn, query, params = list(input$userName))
+      
+      # 2. Lakukan verifikasi di R
+      login_berhasil <- FALSE
+      if (nrow(user_data) > 0) {
+        # Ambil hash password dari database
+        stored_hash <- user_data$password[1]
+        
+        # Verifikasi password yang diinput dengan hash yang tersimpan
+        if (password_verify(stored_hash, input$passwd)) {
+          login_berhasil <- TRUE
+        }
+      }
+      
+      # 3. Set status login
+      if (login_berhasil) {
         auth_data$is_logged_in <- TRUE
-        auth_data$user_info <- as.list(user[1, ])
+        # Hapus kolom password sebelum disimpan di session
+        user_info_list <- as.list(user_data[1, ])
+        user_info_list$password <- NULL 
+        auth_data$user_info <- user_info_list
       } else {
         output$login_error_placeholder <- renderText("Username atau password salah.")
       }
     })
+    
     return(
       list(
         is_logged_in = reactive(auth_data$is_logged_in),

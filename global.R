@@ -10,6 +10,7 @@ library(shinyWidgets)
 library(dplyr)
 library(bslib)
 library(tidyr)
+library(sodium)
 
 # -- KONFIGURASI DATABASE --
 db_config <- list(

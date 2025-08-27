@@ -3,11 +3,23 @@ source("global.R")
 
 # UI
 ui <- dashboardPage(
-  skin = "black",
-  dashboardHeader(title = tags$img(src = "logo.png", height = '30', style = "padding: 5px;"), titleWidth = 250, uiOutput("header_ui")),
+  skin = "black", title = "COREPIN TRACEABILITY",
+  dashboardHeader(
+    title = tags$img(
+      src = "logo.png",
+      height = 20,
+      width = 200
+    ),
+    titleWidth = 250,
+    
+    uiOutput("logoutbtn")
+  ),
   dashboardSidebar(width = 250, sidebarMenu(id = "tabs", menuItem("Operator QC", tabName = "operator_qc", icon = icon("check-square")))),
   dashboardBody(
+    tags$head(tags$link(rel = "shortcut icon", href = "favicon.ico")),
     useShinyjs(),
+     HTML('<center><img src="logos.png"></center>'),
+     hr(),
     setBackgroundImage(src = "bc3.jpg", shinydashboard = TRUE),
     tags$head(tags$style(HTML("
       /* Custom Notification Position */
